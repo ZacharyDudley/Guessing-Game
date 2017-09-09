@@ -47,12 +47,12 @@ Game.prototype.checkGuess = function(){
     if(this.pastGuesses.includes(this.playersGuess)){
         return 'Player has already guessed that number.';
     } else if (this.playersGuess === this.winningNumber){
-        return 'Player Wins!';
+        return 'Player Wins.';
     } else {
         this.pastGuesses.push(this.playersGuess);
 
         if(this.pastGuesses.length >= 5){
-            return 'Player Loses.'
+            return 'Player Loses!'
         } else {
             if(this.difference() < 10){
                 return 'Player is burning up!';
@@ -113,12 +113,12 @@ function submitGuess(game) {
         });
     }
 //LOSING & WINNING
-    if(response == "Player Loses."){
+    if(response == "Player Loses!"){
         $('body').css({'background-color': '#333333'});
         endOfGame();
         $('#player-input').attr('placeholder', ':)');
         $('#player-input').addClass('endGamePlaceholder');
-    } else if(response == "Player Wins!"){
+    } else if(response == "Player Wins."){
         $('body').css({'background-color': '#999999'});
         endOfGame();
         $('#player-input').attr('placeholder', ':(');
@@ -151,25 +151,11 @@ $(document).ready(function(){
 
 //RESET GAME
     $('.btn-danger').click(function(){
-
+        location.reload();
     });
 
 //HINT BUTTON
     $('.btn-warning').click(function(){
-        // if (hintCount > 0) {
-        //     subSubHeader.text('It could be one of these.');
-        //     var arr = game.provideHint();
-        //     subHeader.text(arr[0] + ' | ' + arr[1] + ' | ' + arr[2]);
-        //     hintCount--;
-        // } else {
-        //     if (numHints == 0) {
-        //         subSubHeader.text('Player does not get hints.');
-        //     } else if (numHints == 1) {
-        //         subSubHeader.text('Player may only have ' + numHints + ' hint.');
-        //     } else if (numHints >= 2) {
-        //         subSubHeader.text('Player has only ' + numHints + ' hints.');
-        //     }
-        // }
         if (numHints == 0) {
             subSubHeader.text('Player does not get hints.');
         }
