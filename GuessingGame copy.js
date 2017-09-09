@@ -35,6 +35,7 @@ Game.prototype.isLower = function(){
 
 Game.prototype.playersGuessSubmission = function(guessedNumber){
     if(guessedNumber <= 0 || guessedNumber >= 101 || isNaN(guessedNumber)){
+        alert('That is an invalid guess and you know it. The number must be between 1 and 100.');
         throw 'That is an invalid guess.';
     }
 
@@ -44,23 +45,23 @@ Game.prototype.playersGuessSubmission = function(guessedNumber){
 
 Game.prototype.checkGuess = function(){
     if(this.pastGuesses.includes(this.playersGuess)){
-        return 'You have already guessed that number.';
+        return 'Player has already guessed that number.';
     } else if (this.playersGuess === this.winningNumber){
-        return 'You Win!';
+        return 'Player Wins!';
     } else {
         this.pastGuesses.push(this.playersGuess);
 
         if(this.pastGuesses.length >= 5){
-            return 'You Lose.'
+            return 'Player Loses.'
         } else {
             if(this.difference() < 10){
-                return 'You\'re burning up!';
+                return 'Player is burning up!';
             } else if (this.difference() < 25) {
-                return 'You\'re lukewarm.';
+                return 'Player is lukewarm.';
             } else if(this.difference() < 50){
-                return 'You\'re a bit chilly.';
+                return 'Player is a bit chilly.';
             } else {
-                return 'You\'re ice cold!';
+                return 'Player is ice cold!';
             }
         }
     }
@@ -71,3 +72,121 @@ Game.prototype.provideHint = function(){
 
     return shuffle(hintArray);
 }
+
+//TEXT FIELDS
+    var header = $('#headers').find('h1');
+    var subHeader = $('#headers').find('h2');
+    var subSubHeader = $('#headers').find('h3');
+
+//HINT COUNT
+    var numHints = 3
+    var hintCount = numHints;
+
+function submitGuess(game) {
+
+    function endOfGame() {
+        //DISABLE BUTTONS
+        document.getElementById('btn-circle').disabled = true;
+        document.getElementById('buttonHint').disabled = true;
+        //DISPLAY TEXT
+        header.text(response);
+        subHeader.text('Click RESET to play again.');
+        subSubHeader.css({'color': 'rgba(0, 0, 0, 0)'});
+        subSubHeader.text('TEXT');
+        //DISABLE ENTER KEY
+        $('#player-input').off('keypress');
+        //DISABLE INPUT FIELD
+        $('#player-input').prop('disabled', true);
+    }
+
+//GET PLAYER GUESS, CLEAR INPUT FIELD, SUBMIT GUESS
+    var guess = +$('#player-input').val();
+    $('#player-input').val('');
+    var response = game.playersGuessSubmission(guess);
+//ADD PAST GUESSES TO 'PREV GUESS' DISPLAY
+    if (response != 'Player has already guessed that number.') {
+        $('#guesses').find('.guess').each(function(){
+            if ($(this).text() == "-") {
+                $(this).text(guess);
+                return false;
+            }
+        });
+    }
+//LOSING & WINNING
+    if(response == "Player Loses."){
+        $('body').css({'background-color': '#333333'});
+        endOfGame();
+        $('#player-input').attr('placeholder', ':)');
+        $('#player-input').addClass('endGamePlaceholder');
+    } else if(response == "Player Wins!"){
+        $('body').css({'background-color': '#999999'});
+        endOfGame();
+        $('#player-input').attr('placeholder', ':(');
+        $('#player-input').addClass('endGamePlaceholder');
+    } else {
+        subHeader.text(response);
+        if (game.isLower()) {
+            subSubHeader.text('Try guessing higher.');
+        } else {
+            subSubHeader.text('Try guessing lower.');
+        }
+    }
+}
+
+$(document).ready(function(){
+    var game = newGame();
+    console.log(game.winningNumber);
+
+//SUBMIT BUTTON
+    $('.button-guess').on('click', function(){
+        submitGuess(game);
+    });
+
+//ENTER KEY SUBMITS GUESS
+    $('#player-input').on('keypress', function(e){
+        if(e.which == 13){
+            submitGuess(game);
+        }
+    });
+
+//RESET GAME
+    $('.btn-danger').click(function(){
+
+    });
+
+//HINT BUTTON
+    $('.btn-warning').click(function(){
+        // if (hintCount > 0) {
+        //     subSubHeader.text('It could be one of these.');
+        //     var arr = game.provideHint();
+        //     subHeader.text(arr[0] + ' | ' + arr[1] + ' | ' + arr[2]);
+        //     hintCount--;
+        // } else {
+        //     if (numHints == 0) {
+        //         subSubHeader.text('Player does not get hints.');
+        //     } else if (numHints == 1) {
+        //         subSubHeader.text('Player may only have ' + numHints + ' hint.');
+        //     } else if (numHints >= 2) {
+        //         subSubHeader.text('Player has only ' + numHints + ' hints.');
+        //     }
+        // }
+        if (numHints == 0) {
+            subSubHeader.text('Player does not get hints.');
+        }
+
+        if (hintCount > 0) {
+            var arr = game.provideHint();
+            subHeader.text(arr[0] + ' | ' + arr[1] + ' | ' + arr[2]);
+            hintCount--;
+
+            if (hintCount == 0) {
+                subSubHeader.text('Player is out of hints.');
+            } else if (hintCount == 1) {
+                subSubHeader.text('Player has only ' + hintCount + ' hint left.');
+            } else if (hintCount >= 2) {
+                subSubHeader.text('Player has ' + hintCount + ' more hints.');
+            }
+        }
+    });
+
+});
