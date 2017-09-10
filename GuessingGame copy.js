@@ -90,9 +90,7 @@ function submitGuess(game) {
         document.getElementById('buttonHint').disabled = true;
         //DISPLAY TEXT
         header.text(response);
-        subHeader.text('Click RESET to play again.');
-        subSubHeader.css({'color': 'rgba(0, 0, 0, 0)'});
-        subSubHeader.text('TEXT');
+        subSubHeader.text('Click RESET to play again.');
         //DISABLE ENTER KEY
         $('#player-input').off('keypress');
         //DISABLE INPUT FIELD
@@ -114,13 +112,15 @@ function submitGuess(game) {
     }
 //LOSING & WINNING
     if(response == "Player Loses!"){
-        $('body').css({'background-color': '#333333'});
+        $('body').css({'background-color': '#888888'});
         endOfGame();
+        subHeader.text('Computer cannot be beaten.');
         $('#player-input').attr('placeholder', ':)');
         $('#player-input').addClass('endGamePlaceholder');
     } else if(response == "Player Wins."){
-        $('body').css({'background-color': '#999999'});
+        $('body').css({'background-color': '#444444'});
         endOfGame();
+        subHeader.text('Player must have cheated.');
         $('#player-input').attr('placeholder', ':(');
         $('#player-input').addClass('endGamePlaceholder');
     } else {
